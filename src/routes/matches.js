@@ -1,13 +1,12 @@
 import { Router } from "express";
-import { desc } from "drizzle-orm";
-
 import {
   createMatchSchema,
   listMatchesQuerySchema,
-} from "../validations/matches.js";
+} from "../validation/matches.js";
 import { matches } from "../db/schema.js";
 import { db } from "../db/db.js";
 import { getMatchStatus } from "../utils/match-status.js";
+import { desc } from "drizzle-orm";
 
 export const matchRouter = Router();
 
@@ -62,6 +61,10 @@ matchRouter.post("/", async (req, res) => {
         status: getMatchStatus(startTime, endTime),
       })
       .returning();
+
+    if (res.app.locals.broadcastMatchCreated) {
+      res.app.locals.broadcastMatchCreated(event);
+    }
 
     res.status(201).json({ data: event });
   } catch (e) {
