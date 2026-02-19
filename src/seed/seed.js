@@ -9,8 +9,7 @@ const DEFAULT_MATCH_DURATION_MINUTES = Number.parseInt(
   10,
 );
 const FORCE_LIVE =
-  process.env.SEED_FORCE_LIVE !== "0" &&
-  process.env.SEED_FORCE_LIVE !== "false";
+  process.env.SEED_FORCE_LIVE === "1" && process.env.SEED_FORCE_LIVE === "true";
 const API_URL = process.env.API_URL;
 if (!API_URL) {
   throw new Error("API_URL is required to seed via REST endpoints.");
@@ -132,10 +131,11 @@ async function createMatch(seedMatch) {
 async function insertCommentary(matchId, entry) {
   const payload = {
     message: entry.message ?? "Update",
+    minute: entry.minute ?? 0,
   };
-  if (entry.minute !== undefined && entry.minute !== null) {
-    payload.minute = entry.minute;
-  }
+  // if (entry.minute !== undefined && entry.minute !== null) {
+  //   payload.minute = entry.minute;
+  // }
   if (entry.sequence !== undefined && entry.sequence !== null) {
     payload.sequence = entry.sequence;
   }

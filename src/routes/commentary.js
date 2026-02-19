@@ -56,7 +56,7 @@ commentaryRouter.post("/", async (req, res) => {
   if (!paramsResult.success) {
     return res
       .status(400)
-      .json({ error: "Invalid match ID", details: paramsResult.error.issues });
+      .json({ error: "Invalid match ID.", details: paramsResult.error.issues });
   }
 
   const bodyResult = createCommentarySchema.safeParse(req.body);
@@ -79,11 +79,19 @@ commentaryRouter.post("/", async (req, res) => {
       })
       .returning();
 
-    if (res.app.locals.broadcastCommentary) {
-      res.app.locals.broadcastCommentary(result.matchId, result);
-    }
+    // if (res.app.locals.broadcastCommentary) {
+    //   res.app.locals.broadcastCommentary(result.matchId, result);
+    // }
 
     res.status(201).json({ data: result });
+
+    if (res.app.locals.broadcastCommentary) {
+      try {
+        res.app.locals.broadcastCommentary(result.matchId, result);
+      } catch (broadcastErr) {
+        console.error("Failed to broadcast commentary: ", broadcastErr);
+      }
+    }
   } catch (e) {
     console.error("Failed to create commentary.", e);
     res.status(500).json({ error: "Failed to create commentary." });
