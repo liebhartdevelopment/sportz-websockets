@@ -9,7 +9,7 @@ const DEFAULT_MATCH_DURATION_MINUTES = Number.parseInt(
   10,
 );
 const FORCE_LIVE =
-  process.env.SEED_FORCE_LIVE === "1" && process.env.SEED_FORCE_LIVE === "true";
+  process.env.SEED_FORCE_LIVE === "1" || process.env.SEED_FORCE_LIVE === "true";
 const API_URL = process.env.API_URL;
 if (!API_URL) {
   throw new Error("API_URL is required to seed via REST endpoints.");
